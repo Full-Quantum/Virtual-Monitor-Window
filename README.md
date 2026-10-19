@@ -1,18 +1,16 @@
 # Virtual Monitor Window
 
-Virtual Monitor Window is a portable Windows app that brings an extended
-display into a resizable window, helping you keep an eye on content that would
-otherwise be blocked from view. When the selected display is a Virtual Display
-Driver (VDD) display, you can optionally forward mouse and keyboard input to
-it.
+Virtual Monitor Window is a portable Windows app for viewing a display in a
+resizable window. When the selected display is a Virtual Display Driver (VDD)
+display, you can optionally forward mouse and keyboard input to it.
 
 ## Why this exists
 
-Windows **Extend desktop to this display** adds a separate desktop area; it
-does not duplicate the desktop onto the physical screen. When objects or people
-block the view of a large screen, content shown on the extended display can be
-hard to see. Virtual Monitor Window presents that extended display in a small
-window, like a little duplicate monitor.
+Windows **Extend desktop to this display** creates a separate desktop area; it
+does not duplicate that desktop onto the physical screen. If people or objects
+block the view of a large screen, its content can be hard to see. Virtual
+Monitor Window shows the extended display in a small resizable window, like a
+little duplicate monitor.
 
 ![Illustration of the problem Virtual Monitor Window is designed to solve](./docs/images/problem-this-was-designed-to-solve.png)
 
@@ -92,9 +90,8 @@ This project bundles the Virtual Display Driver and Nefcon helper packages.
 Their project links, release versions, and license texts are in
 [THIRD-PARTY-NOTICES.txt](./THIRD-PARTY-NOTICES.txt).
 
-The MIT license in [LICENSE](./LICENSE) applies to the original
-Virtual Monitor Window project code. Bundled third-party packages remain under
-their respective licenses; see [THIRD-PARTY-NOTICES.txt](./THIRD-PARTY-NOTICES.txt).
+No license has been selected yet for the original Virtual Monitor Window
+project code. Add a project license before redistributing it.
 
 ## Credit
 
