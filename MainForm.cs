@@ -101,7 +101,7 @@ internal sealed class MainForm : Form
 
     public MainForm()
     {
-        Text = "Virtual Monitor Window 1.0.2";
+        Text = "Virtual Monitor Window 1.0.3";
         MinimumSize = new Size(640, 480);
         Size = new Size(1000, 680);
         StartPosition = FormStartPosition.CenterScreen;
@@ -143,7 +143,7 @@ internal sealed class MainForm : Form
         {
             AutoSize = true,
             Font = new Font(Font.FontFamily, 15, FontStyle.Bold),
-            Text = "Virtual Monitor Window 1.0.2",
+            Text = "Virtual Monitor Window 1.0.3",
             Padding = new Padding(0, 0, 0, 8)
         };
         layout.Controls.Add(heading, 0, 0);
@@ -203,10 +203,12 @@ internal sealed class MainForm : Form
         };
         displayRow.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
         displayRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        displayRow.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         displayRow.Controls.Add(new Label
         {
             AutoSize = true,
             Text = "Display:",
+            Margin = new Padding(0),
             Padding = new Padding(0, 5, 8, 0)
         }, 0, 0);
         _displayPicker.Margin = new Padding(0);
@@ -238,7 +240,7 @@ internal sealed class MainForm : Form
         {
             AutoSize = true,
             Dock = DockStyle.Right,
-            Text = "by Full_Quantum",
+            Text = "by Full_Quantum | v1.0.3",
             TextAlign = ContentAlignment.MiddleRight,
             Padding = new Padding(0, 0, 2, 0)
         });

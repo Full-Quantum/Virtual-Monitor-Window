@@ -24,7 +24,7 @@ little duplicate monitor.
 
 ## Run
 
-Download or build `VirtualMonitorWindow-1.0.2.exe` and keep the `Assets` folder
+Download or build `VirtualMonitorWindow-1.0.3.exe` and keep the `Assets` folder
 next to it. The app does not need internet access for normal use.
 
 The bundled display driver is **not installed automatically**. To use virtual
@@ -53,7 +53,7 @@ dotnet publish .\VirtualMonitorWindow.csproj -c Release -r win-x64 --self-contai
 ```
 
 The executable is written to
-`bin\Release\net8.0-windows\win-x64\publish\VirtualMonitorWindow-1.0.2.exe`.
+`bin\Release\net8.0-windows\win-x64\publish\VirtualMonitorWindow-1.0.3.exe`.
 The two ZIP packages in `Assets` are copied alongside it and are required for
 the driver's installation workflow.
 
@@ -62,7 +62,7 @@ the driver's installation workflow.
 Run the published app with `--self-test`:
 
 ```powershell
-.\bin\Release\net8.0-windows\win-x64\publish\VirtualMonitorWindow-1.0.2.exe --self-test
+.\bin\Release\net8.0-windows\win-x64\publish\VirtualMonitorWindow-1.0.3.exe --self-test
 ```
 
 The self-test verifies the bundled package hashes, enumerates displays,
