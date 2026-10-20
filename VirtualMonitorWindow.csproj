@@ -10,11 +10,11 @@
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
-    <AssemblyName>VirtualMonitorWindow-1.0.4</AssemblyName>
-    <AssemblyTitle>Virtual Monitor Window 1.0.4</AssemblyTitle>
+    <AssemblyName>VirtualMonitorWindow-1.0.5</AssemblyName>
+    <AssemblyTitle>Virtual Monitor Window 1.0.5</AssemblyTitle>
     <Product>Virtual Monitor Window</Product>
     <Company>Full_Quantum</Company>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>

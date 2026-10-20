@@ -1,10 +1,18 @@
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 
 namespace VirtualMonitorWindow;
 
 internal sealed class MainForm : Form
 {
+    private static readonly HttpClient GitHubClient = new()
+    {
+        Timeout = TimeSpan.FromSeconds(10)
+    };
+
     private readonly ComboBox _displayPicker = new()
     {
         Dock = DockStyle.Fill,
@@ -68,6 +76,14 @@ internal sealed class MainForm : Form
         Text = "Ready",
         TextAlign = ContentAlignment.MiddleLeft
     };
+    private readonly LinkLabel _latestVersionLink = new()
+    {
+        AutoSize = true,
+        Text = "Latest: checking...",
+        TextAlign = ContentAlignment.MiddleRight,
+        Padding = new Padding(8, 0, 4, 0)
+    };
+    private readonly ToolTip _latestVersionToolTip = new();
     private readonly Button _installButton = new()
     {
         AutoSize = true,
@@ -85,6 +101,7 @@ internal sealed class MainForm : Form
     };
     private readonly System.Windows.Forms.Timer _captureTimer = new() { Interval = 150 };
     private readonly System.Windows.Forms.Timer _refreshTimer = new() { Interval = 2000 };
+    private readonly CancellationTokenSource _latestReleaseCheckCancellation = new();
     private readonly NativeMethods.LowLevelHookProc _mouseHookCallback;
     private readonly NativeMethods.LowLevelHookProc _keyboardHookCallback;
 
@@ -97,11 +114,13 @@ internal sealed class MainForm : Form
     private bool _mouseButtonHeld;
     private bool _refreshingStatus;
     private bool _changingCount;
+    private bool _checkingLatestRelease;
+    private string? _latestReleaseUrl;
     private string _lastCaptureError = "";
 
     public MainForm()
     {
-        Text = "Virtual Monitor Window 1.0.4";
+        Text = "Virtual Monitor Window 1.0.5";
         MinimumSize = new Size(640, 480);
         Size = new Size(1000, 680);
         StartPosition = FormStartPosition.CenterScreen;
@@ -118,6 +137,7 @@ internal sealed class MainForm : Form
         _vddSettingsToggle.Click += (_, _) => ToggleVddSettings();
         _interactive.CheckedChanged += InteractiveCheckedChanged;
         _darkMode.CheckedChanged += (_, _) => ApplyTheme(_darkMode.Checked);
+        _latestVersionLink.LinkClicked += LatestVersionLinkClicked;
         Shown += MainFormShown;
         FormClosed += MainFormClosed;
     }
@@ -146,7 +166,7 @@ internal sealed class MainForm : Form
         {
             AutoSize = true,
             Font = new Font(Font.FontFamily, 15, FontStyle.Bold),
-            Text = "Virtual Monitor Window 1.0.4",
+            Text = "Virtual Monitor Window 1.0.5",
             Padding = new Padding(0, 0, 0, 8)
         };
         layout.Controls.Add(heading, 0, 0);
@@ -228,15 +248,113 @@ internal sealed class MainForm : Form
             Padding = new Padding(2, 4, 0, 0)
         };
         statusPanel.Controls.Add(_status);
-        statusPanel.Controls.Add(new Label
+        var footer = new FlowLayoutPanel
         {
             AutoSize = true,
             Dock = DockStyle.Right,
-            Text = "by Full_Quantum | v1.0.4",
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = false
+        };
+        footer.Controls.Add(_latestVersionLink);
+        footer.Controls.Add(new Label
+        {
+            AutoSize = true,
+            Text = "by Full_Quantum | v1.0.5",
             TextAlign = ContentAlignment.MiddleRight,
             Padding = new Padding(0, 0, 2, 0)
         });
+        statusPanel.Controls.Add(footer);
         layout.Controls.Add(statusPanel, 0, 7);
+    }
+
+    private async void LatestVersionLinkClicked(object? sender, LinkLabelLinkClickedEventArgs e)
+    {
+        if (_latestReleaseUrl is null)
+        {
+            await CheckLatestReleaseAsync();
+            return;
+        }
+
+        try
+        {
+            Process.Start(new ProcessStartInfo(_latestReleaseUrl)
+            {
+                UseShellExecute = true
+            });
+        }
+        catch (Win32Exception error)
+        {
+            _status.Text = $"Could not open GitHub releases: {error.Message}";
+        }
+    }
+
+    private async Task CheckLatestReleaseAsync()
+    {
+        if (_checkingLatestRelease || IsDisposed)
+            return;
+        _checkingLatestRelease = true;
+        _latestVersionLink.Text = "Latest: checking...";
+        _latestReleaseUrl = null;
+        try
+        {
+            using var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                "https://api.github.com/repos/Full-Quantum/Virtual-Monitor-Window/releases/latest");
+            request.Headers.UserAgent.ParseAdd("VirtualMonitorWindow");
+            using var response = await GitHubClient.SendAsync(
+                request,
+                _latestReleaseCheckCancellation.Token);
+            response.EnsureSuccessStatusCode();
+            await using var stream = await response.Content.ReadAsStreamAsync(
+                _latestReleaseCheckCancellation.Token);
+            using var release = await JsonDocument.ParseAsync(
+                stream,
+                cancellationToken: _latestReleaseCheckCancellation.Token);
+            if (IsDisposed)
+                return;
+            var root = release.RootElement;
+            if (!root.TryGetProperty("tag_name", out var tagElement) ||
+                tagElement.ValueKind != JsonValueKind.String ||
+                !root.TryGetProperty("html_url", out var urlElement) ||
+                urlElement.ValueKind != JsonValueKind.String)
+            {
+                throw new InvalidDataException("GitHub returned incomplete release information.");
+            }
+
+            var tag = tagElement.GetString();
+            var releaseUrl = urlElement.GetString();
+            if (string.IsNullOrWhiteSpace(tag) ||
+                !tag.StartsWith('v') ||
+                !Version.TryParse(tag[1..], out var latestVersion) ||
+                string.IsNullOrWhiteSpace(releaseUrl) ||
+                !Uri.TryCreate(releaseUrl, UriKind.Absolute, out var uri) ||
+                uri.Scheme != Uri.UriSchemeHttps ||
+                uri.Host != "github.com")
+            {
+                throw new InvalidDataException("GitHub returned invalid release information.");
+            }
+
+            var currentVersion = typeof(MainForm).Assembly.GetName().Version ?? new Version(0, 0);
+            _latestReleaseUrl = uri.AbsoluteUri;
+            _latestVersionLink.Text = latestVersion > currentVersion
+                ? $"Update available: {tag}"
+                : $"Latest: {tag}";
+            _latestVersionToolTip.SetToolTip(_latestVersionLink, "Open the latest GitHub release.");
+            _latestVersionLink.LinkArea = new LinkArea(0, _latestVersionLink.Text.Length);
+        }
+        catch (Exception error) when (
+            error is HttpRequestException or TaskCanceledException or JsonException or InvalidDataException or IOException)
+        {
+            if (IsDisposed)
+                return;
+            _latestVersionLink.Text = "Latest version unavailable (click to retry)";
+            _latestVersionLink.LinkArea = new LinkArea(0, _latestVersionLink.Text.Length);
+            _latestVersionToolTip.SetToolTip(_latestVersionLink, error.Message);
+        }
+        finally
+        {
+            _checkingLatestRelease = false;
+        }
     }
 
     private void ToggleVddSettings()
@@ -317,6 +435,7 @@ internal sealed class MainForm : Form
 
     private async void MainFormShown(object? sender, EventArgs e)
     {
+        _ = CheckLatestReleaseAsync();
         RefreshDisplays();
         await RefreshDriverStatusAsync();
         _captureTimer.Start();
@@ -818,6 +937,8 @@ internal sealed class MainForm : Form
 
     private void MainFormClosed(object? sender, FormClosedEventArgs e)
     {
+        _latestReleaseCheckCancellation.Cancel();
+        _latestReleaseCheckCancellation.Dispose();
         _captureTimer.Stop();
         _refreshTimer.Stop();
         RemoveInputHooks();
