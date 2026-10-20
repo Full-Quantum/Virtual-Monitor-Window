@@ -101,7 +101,7 @@ internal sealed class MainForm : Form
 
     public MainForm()
     {
-        Text = "Virtual Monitor Window 1.0.3";
+        Text = "Virtual Monitor Window 1.0.4";
         MinimumSize = new Size(640, 480);
         Size = new Size(1000, 680);
         StartPosition = FormStartPosition.CenterScreen;
@@ -127,7 +127,7 @@ internal sealed class MainForm : Form
         var layout = new TableLayoutPanel
         {
             ColumnCount = 1,
-            RowCount = 5,
+            RowCount = 8,
             Dock = DockStyle.Fill,
             Padding = new Padding(8)
         };
@@ -135,7 +135,10 @@ internal sealed class MainForm : Form
         layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
+        layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         Controls.Add(layout);
 
@@ -143,7 +146,7 @@ internal sealed class MainForm : Form
         {
             AutoSize = true,
             Font = new Font(Font.FontFamily, 15, FontStyle.Bold),
-            Text = "Virtual Monitor Window 1.0.3",
+            Text = "Virtual Monitor Window 1.0.4",
             Padding = new Padding(0, 0, 0, 8)
         };
         layout.Controls.Add(heading, 0, 0);
@@ -174,30 +177,20 @@ internal sealed class MainForm : Form
         _vddSettingsPanel.Controls.Add(_interactive);
         layout.Controls.Add(_vddSettingsPanel, 0, 2);
 
-        var previewLayout = new TableLayoutPanel
-        {
-            ColumnCount = 1,
-            RowCount = 4,
-            Dock = DockStyle.Fill,
-            Padding = new Padding(0, 0, 0, 0)
-        };
-        previewLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
-        previewLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-        previewLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-        previewLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-        previewLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-        previewLayout.Controls.Add(new Label
+        layout.Controls.Add(new Label
         {
             AutoSize = true,
             Font = new Font(Font.FontFamily, 10, FontStyle.Bold),
             Text = "Live preview",
             Padding = new Padding(0, 0, 0, 4)
-        }, 0, 0);
+        }, 0, 3);
         var displayRow = new TableLayoutPanel
         {
             ColumnCount = 2,
             RowCount = 1,
-            Dock = DockStyle.Fill,
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            Dock = DockStyle.Top,
             Margin = new Padding(0),
             Padding = new Padding(0)
         };
@@ -214,20 +207,19 @@ internal sealed class MainForm : Form
         _displayPicker.Margin = new Padding(0);
         _displayPicker.Dock = DockStyle.Fill;
         displayRow.Controls.Add(_displayPicker, 1, 0);
-        previewLayout.Controls.Add(displayRow, 0, 1);
+        layout.Controls.Add(displayRow, 0, 4);
         _preview.Margin = new Padding(0);
-        previewLayout.Controls.Add(_preview, 0, 2);
+        layout.Controls.Add(_preview, 0, 5);
         var previewFooter = new FlowLayoutPanel
         {
             AutoSize = true,
-            Dock = DockStyle.Fill,
+            Dock = DockStyle.Top,
             FlowDirection = FlowDirection.TopDown,
             WrapContents = false,
             Padding = new Padding(0, 4, 0, 0)
         };
         previewFooter.Controls.Add(_previewHint);
-        previewLayout.Controls.Add(previewFooter, 0, 3);
-        layout.Controls.Add(previewLayout, 0, 3);
+        layout.Controls.Add(previewFooter, 0, 6);
 
         var statusPanel = new Panel
         {
@@ -240,11 +232,11 @@ internal sealed class MainForm : Form
         {
             AutoSize = true,
             Dock = DockStyle.Right,
-            Text = "by Full_Quantum | v1.0.3",
+            Text = "by Full_Quantum | v1.0.4",
             TextAlign = ContentAlignment.MiddleRight,
             Padding = new Padding(0, 0, 2, 0)
         });
-        layout.Controls.Add(statusPanel, 0, 4);
+        layout.Controls.Add(statusPanel, 0, 7);
     }
 
     private void ToggleVddSettings()
