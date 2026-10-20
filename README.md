@@ -3,7 +3,7 @@
 Virtual Monitor Window is a portable Windows app for viewing a display in a
 resizable window.
 
-![Virtual Monitor Window 1.0.0 screenshot](./docs/images/virtual-monitor-window-v1.0.0.png)
+![Virtual Monitor Window 1.0.5 screenshot](./docs/images/virtual-monitor-window-v1.0.5.png)
 
 ## Why this exists
 
