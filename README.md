@@ -35,7 +35,9 @@ picker lists detected VDD displays first.
 The preview is view-only by default. Select a VDD display and enable **Control
 the virtual display with mouse and keyboard** to forward input. Keyboard input
 is sent to the virtual display after clicking the preview. Press Escape to
-turn control off. Input outside the preview remains local to Windows.
+turn control off. The install, monitor-count, and input-control options are
+under **Show virtual display settings**. Input outside the preview remains
+local to Windows.
 
 ## Build
 

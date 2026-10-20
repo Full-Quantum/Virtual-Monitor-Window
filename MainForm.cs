@@ -34,6 +34,21 @@ internal sealed class MainForm : Form
         AutoSize = true,
         Text = "Dark mode"
     };
+    private readonly Button _vddSettingsToggle = new()
+    {
+        AutoSize = true,
+        Text = "Show virtual display settings"
+    };
+    private readonly FlowLayoutPanel _vddSettingsPanel = new()
+    {
+        AutoSize = true,
+        AutoSizeMode = AutoSizeMode.GrowAndShrink,
+        Dock = DockStyle.Fill,
+        FlowDirection = FlowDirection.LeftToRight,
+        WrapContents = true,
+        Padding = new Padding(0, 0, 0, 6),
+        Visible = false
+    };
     private readonly Label _driverStatus = new()
     {
         AutoSize = true,
@@ -100,6 +115,7 @@ internal sealed class MainForm : Form
         _refreshButton.Click += (_, _) => RefreshDisplays();
         _applyCountButton.Click += ApplyCountClicked;
         _installButton.Click += InstallClicked;
+        _vddSettingsToggle.Click += (_, _) => ToggleVddSettings();
         _interactive.CheckedChanged += InteractiveCheckedChanged;
         _darkMode.CheckedChanged += (_, _) => ApplyTheme(_darkMode.Checked);
         Shown += MainFormShown;
@@ -111,11 +127,12 @@ internal sealed class MainForm : Form
         var layout = new TableLayoutPanel
         {
             ColumnCount = 1,
-            RowCount = 4,
+            RowCount = 5,
             Dock = DockStyle.Fill,
             Padding = new Padding(8)
         };
         layout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+        layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
@@ -139,19 +156,23 @@ internal sealed class MainForm : Form
             WrapContents = true,
             Padding = new Padding(0, 0, 0, 6)
         };
-        toolbar.Controls.Add(_installButton);
-        toolbar.Controls.Add(_driverStatus);
+        toolbar.Controls.Add(_vddSettingsToggle);
         toolbar.Controls.Add(_refreshButton);
-        toolbar.Controls.Add(new Label
+        toolbar.Controls.Add(_darkMode);
+        layout.Controls.Add(toolbar, 0, 1);
+
+        _vddSettingsPanel.Controls.Add(_installButton);
+        _vddSettingsPanel.Controls.Add(_driverStatus);
+        _vddSettingsPanel.Controls.Add(new Label
         {
             AutoSize = true,
             Text = "Virtual monitors:",
             Padding = new Padding(12, 7, 2, 0)
         });
-        toolbar.Controls.Add(_displayCount);
-        toolbar.Controls.Add(_applyCountButton);
-        toolbar.Controls.Add(_darkMode);
-        layout.Controls.Add(toolbar, 0, 1);
+        _vddSettingsPanel.Controls.Add(_displayCount);
+        _vddSettingsPanel.Controls.Add(_applyCountButton);
+        _vddSettingsPanel.Controls.Add(_interactive);
+        layout.Controls.Add(_vddSettingsPanel, 0, 2);
 
         var previewLayout = new TableLayoutPanel
         {
@@ -177,7 +198,8 @@ internal sealed class MainForm : Form
             ColumnCount = 2,
             RowCount = 1,
             Dock = DockStyle.Fill,
-            Padding = new Padding(0, 0, 0, 6)
+            Margin = new Padding(0),
+            Padding = new Padding(0)
         };
         displayRow.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
         displayRow.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
@@ -191,6 +213,7 @@ internal sealed class MainForm : Form
         _displayPicker.Dock = DockStyle.Fill;
         displayRow.Controls.Add(_displayPicker, 1, 0);
         previewLayout.Controls.Add(displayRow, 0, 1);
+        _preview.Margin = new Padding(0);
         previewLayout.Controls.Add(_preview, 0, 2);
         var previewFooter = new FlowLayoutPanel
         {
@@ -200,10 +223,9 @@ internal sealed class MainForm : Form
             WrapContents = false,
             Padding = new Padding(0, 4, 0, 0)
         };
-        previewFooter.Controls.Add(_interactive);
         previewFooter.Controls.Add(_previewHint);
         previewLayout.Controls.Add(previewFooter, 0, 3);
-        layout.Controls.Add(previewLayout, 0, 2);
+        layout.Controls.Add(previewLayout, 0, 3);
 
         var statusPanel = new Panel
         {
@@ -220,7 +242,15 @@ internal sealed class MainForm : Form
             TextAlign = ContentAlignment.MiddleRight,
             Padding = new Padding(0, 0, 2, 0)
         });
-        layout.Controls.Add(statusPanel, 0, 3);
+        layout.Controls.Add(statusPanel, 0, 4);
+    }
+
+    private void ToggleVddSettings()
+    {
+        _vddSettingsPanel.Visible = !_vddSettingsPanel.Visible;
+        _vddSettingsToggle.Text = _vddSettingsPanel.Visible
+            ? "Hide virtual display settings"
+            : "Show virtual display settings";
     }
 
     private void ApplyTheme(bool darkMode)
