@@ -1,15 +1,12 @@
 # Virtual Monitor Window
 
 Virtual Monitor Window is a portable Windows app for viewing a display in a
-resizable window. When the selected display is a Virtual Display Driver (VDD)
-display, you can optionally forward mouse and keyboard input to it.
+resizable window.
 
 ## Why this exists
 
-Windows **Extend desktop to this display** creates a separate desktop area; it
-does not duplicate that desktop onto the physical screen. If people or objects
-block the view of a large screen, its content can be hard to see. Virtual
-Monitor Window shows the extended display in a small resizable window, like a
+If people or objects block the view of a large screen, its content can be hard to see.
+Virtual Monitor Window shows the extended display in a small resizable window, like a
 little duplicate monitor.
 
 ![Illustration of the problem Virtual Monitor Window is designed to solve](./docs/images/problem-this-was-designed-to-solve.png)
