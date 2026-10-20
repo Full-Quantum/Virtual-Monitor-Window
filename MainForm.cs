@@ -101,7 +101,7 @@ internal sealed class MainForm : Form
 
     public MainForm()
     {
-        Text = "Virtual Monitor Window";
+        Text = "Virtual Monitor Window 1.0.2";
         MinimumSize = new Size(640, 480);
         Size = new Size(1000, 680);
         StartPosition = FormStartPosition.CenterScreen;
@@ -143,7 +143,7 @@ internal sealed class MainForm : Form
         {
             AutoSize = true,
             Font = new Font(Font.FontFamily, 15, FontStyle.Bold),
-            Text = "Virtual Monitor Window",
+            Text = "Virtual Monitor Window 1.0.2",
             Padding = new Padding(0, 0, 0, 8)
         };
         layout.Controls.Add(heading, 0, 0);

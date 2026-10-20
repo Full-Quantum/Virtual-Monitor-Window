@@ -171,10 +171,11 @@ internal static class VirtualMonitorService
     public static async Task<(bool Success, string Message)> InstallWithUacAsync()
     {
         var executable = Environment.ProcessPath;
+        var expectedExecutable = $"{typeof(MainForm).Assembly.GetName().Name}.exe";
         if (string.IsNullOrWhiteSpace(executable) ||
-            !Path.GetFileName(executable).Equals("VirtualMonitorWindow.exe", StringComparison.OrdinalIgnoreCase))
+            !Path.GetFileName(executable).Equals(expectedExecutable, StringComparison.OrdinalIgnoreCase))
         {
-            return (false, "Run the published VirtualMonitorWindow.exe before installing the driver.");
+            return (false, $"Run the published {expectedExecutable} before installing the driver.");
         }
 
         var operationId = Guid.NewGuid().ToString("N");
