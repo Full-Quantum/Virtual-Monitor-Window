@@ -3,7 +3,7 @@
 Virtual Monitor Window is a portable Windows app for viewing a display in a
 resizable window.
 
-![Virtual Monitor Window 1.0.5 screenshot](./docs/images/virtual-monitor-window-v1.0.5.png)
+![Virtual Monitor Window 1.0.6 screenshot](./docs/images/virtual-monitor-window-v1.0.6.png)
 
 ## Why this exists
 
@@ -24,10 +24,19 @@ little duplicate monitor.
 
 ## Run
 
-Download or build `VirtualMonitorWindow-1.0.5.exe` and keep the `Assets` folder
-next to it. The app does not need internet access for normal use.
+1. Open the [latest release](https://github.com/Full-Quantum/Virtual-Monitor-Window/releases/latest).
+2. Download `VirtualMonitorWindow-1.0.6.exe` and the two `Assets` ZIP files
+   (or the release archive, if provided), keeping the `Assets` folder next to
+   the exe.
+3. Run the exe. No installer or separate .NET installation is needed, and the
+   app does not need internet access for normal use.
+
 The footer checks GitHub for the latest release on launch; click the version
 indicator to open that release, or retry the check if it is unavailable.
+
+Click **Preview only** to hide every control except the live preview and a
+small **Exit preview only** button in its top-right corner. The preview then
+fills the window edge to edge with no padding.
 
 The bundled display driver is **not installed automatically**. To use virtual
 displays, select **Install virtual display driver...** and approve the Windows
@@ -40,6 +49,8 @@ is sent to the virtual display after clicking the preview. Press Escape to
 turn control off. The install, monitor-count, and input-control options are
 under **Show virtual display settings**. Input outside the preview remains
 local to Windows.
+
+To build it yourself instead, see [Build](#build).
 
 ## Build
 
@@ -55,7 +66,7 @@ dotnet publish .\VirtualMonitorWindow.csproj -c Release -r win-x64 --self-contai
 ```
 
 The executable is written to
-`bin\Release\net8.0-windows\win-x64\publish\VirtualMonitorWindow-1.0.5.exe`.
+`bin\Release\net8.0-windows\win-x64\publish\VirtualMonitorWindow-1.0.6.exe`.
 The two ZIP packages in `Assets` are copied alongside it and are required for
 the driver's installation workflow.
 
@@ -64,7 +75,7 @@ the driver's installation workflow.
 Run the published app with `--self-test`:
 
 ```powershell
-.\bin\Release\net8.0-windows\win-x64\publish\VirtualMonitorWindow-1.0.5.exe --self-test
+.\bin\Release\net8.0-windows\win-x64\publish\VirtualMonitorWindow-1.0.6.exe --self-test
 ```
 
 The self-test verifies the bundled package hashes, enumerates displays,

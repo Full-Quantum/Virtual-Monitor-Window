@@ -13,6 +13,14 @@ internal sealed class MainForm : Form
         Timeout = TimeSpan.FromSeconds(10)
     };
 
+    private readonly Button _previewOnlyToggle = new()
+    {
+        AutoSize = true,
+        Text = "Preview only"
+    };
+    private TableLayoutPanel _layout = null!;
+    private bool _previewOnly;
+    private bool _vddSettingsWereVisible;
     private readonly ComboBox _displayPicker = new()
     {
         Dock = DockStyle.Fill,
@@ -120,7 +128,7 @@ internal sealed class MainForm : Form
 
     public MainForm()
     {
-        Text = "Virtual Monitor Window 1.0.5";
+        Text = "Virtual Monitor Window 1.0.6";
         MinimumSize = new Size(640, 480);
         Size = new Size(1000, 680);
         StartPosition = FormStartPosition.CenterScreen;
@@ -135,6 +143,7 @@ internal sealed class MainForm : Form
         _applyCountButton.Click += ApplyCountClicked;
         _installButton.Click += InstallClicked;
         _vddSettingsToggle.Click += (_, _) => ToggleVddSettings();
+        _previewOnlyToggle.Click += (_, _) => SetPreviewOnly(!_previewOnly);
         _interactive.CheckedChanged += InteractiveCheckedChanged;
         _darkMode.CheckedChanged += (_, _) => ApplyTheme(_darkMode.Checked);
         _latestVersionLink.LinkClicked += LatestVersionLinkClicked;
@@ -161,12 +170,13 @@ internal sealed class MainForm : Form
         layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         layout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
         Controls.Add(layout);
+        _layout = layout;
 
         var heading = new Label
         {
             AutoSize = true,
             Font = new Font(Font.FontFamily, 15, FontStyle.Bold),
-            Text = "Virtual Monitor Window 1.0.5",
+            Text = "Virtual Monitor Window 1.0.6",
             Padding = new Padding(0, 0, 0, 8)
         };
         layout.Controls.Add(heading, 0, 0);
@@ -182,6 +192,7 @@ internal sealed class MainForm : Form
         toolbar.Controls.Add(_vddSettingsToggle);
         toolbar.Controls.Add(_refreshButton);
         toolbar.Controls.Add(_darkMode);
+        toolbar.Controls.Add(_previewOnlyToggle);
         layout.Controls.Add(toolbar, 0, 1);
 
         _vddSettingsPanel.Controls.Add(_installButton);
@@ -259,7 +270,7 @@ internal sealed class MainForm : Form
         footer.Controls.Add(new Label
         {
             AutoSize = true,
-            Text = "by Full_Quantum | v1.0.5",
+            Text = "by Full_Quantum | v1.0.6",
             TextAlign = ContentAlignment.MiddleRight,
             Padding = new Padding(0, 0, 2, 0)
         });
@@ -363,6 +374,44 @@ internal sealed class MainForm : Form
         _vddSettingsToggle.Text = _vddSettingsPanel.Visible
             ? "Hide virtual display settings"
             : "Show virtual display settings";
+    }
+
+    private void SetPreviewOnly(bool enabled)
+    {
+        if (enabled)
+            _vddSettingsWereVisible = _vddSettingsPanel.Visible;
+        _previewOnly = enabled;
+        SuspendLayout();
+        _layout.SuspendLayout();
+        foreach (Control control in _layout.Controls)
+        {
+            if (control != _preview)
+                control.Visible = !enabled;
+        }
+
+        if (!enabled)
+            _vddSettingsPanel.Visible = _vddSettingsWereVisible;
+        _layout.Padding = enabled ? Padding.Empty : new Padding(8);
+        _preview.BorderStyle = enabled ? BorderStyle.None : BorderStyle.FixedSingle;
+        if (enabled)
+        {
+            _previewOnlyToggle.Text = "Exit preview only";
+            _previewOnlyToggle.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            _preview.Controls.Add(_previewOnlyToggle);
+            _previewOnlyToggle.Location = new Point(_preview.ClientSize.Width - _previewOnlyToggle.Width, 0);
+            _previewOnlyToggle.BringToFront();
+        }
+        else
+        {
+            _preview.Controls.Remove(_previewOnlyToggle);
+            _previewOnlyToggle.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            _previewOnlyToggle.Text = "Preview only";
+            var toolbar = (FlowLayoutPanel)_layout.GetControlFromPosition(0, 1)!;
+            toolbar.Controls.Add(_previewOnlyToggle);
+        }
+
+        _layout.ResumeLayout(true);
+        ResumeLayout(true);
     }
 
     private void ApplyTheme(bool darkMode)
