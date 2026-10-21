@@ -15,9 +15,9 @@ little duplicate monitor.
 
 ## Features
 
-- Virtual Monitor view of detected Windows displays, with the visible cursor.
-- Optional mouse and keyboard control for VDD virtual displays.
-- Create and manage up to 16 VDD virtual displays.
+- Virtual Monitor mirrors any display connected in a resizable window
+- See your monitor around corners and behind objects, perfect for presentation scenarios
+- "Virtual Monitor Only Mode" button
 - Light and dark themes.
 - Self-contained x64 Windows executable; no separate .NET installation is
   required to run the published app.
