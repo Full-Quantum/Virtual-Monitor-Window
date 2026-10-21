@@ -44,6 +44,10 @@ This project bundles the Virtual Display Driver and Nefcon helper packages.
 Their project links, release versions, and license texts are in
 [THIRD-PARTY-NOTICES.txt](./THIRD-PARTY-NOTICES.txt).
 
+I'm probably getting some of this wrong. I'm trying to credit everyone in the
+most acceptable way, so feedback is appreciated. If you spot a missing or
+incorrect attribution or license notice, please open an issue.
+
 The Virtual Monitor Window source code, documentation, and included
 illustration are available under the MIT License in [LICENSE](./LICENSE).
 The self-contained Windows executable also bundles the open-source .NET
