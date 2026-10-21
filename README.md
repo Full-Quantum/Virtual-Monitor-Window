@@ -22,21 +22,9 @@ little duplicate monitor.
 - Self-contained x64 Windows executable; no separate .NET installation is
   required to run the published app.
 
-## Driver and safety notes
+## Driver note
 
-The Windows display driver is installed system-wide and is not portable. Moving
-or deleting this app does not uninstall the driver. Use the vendor's Virtual
-Driver Control tool or Device Manager to remove it.
-
-Virtual display drivers can affect display arrangement and may cause display
-priority issues or a black screen around major graphics or chipset driver
-updates. Remove the VDD driver before those updates. Keep a physical display
-connected and know how to enter Windows Safe Mode before installing a display
-driver.
-
-The installer verifies the bundled package hashes and relies on Windows to
-validate the driver's signed catalog. It does not add a certificate to
-Windows' trusted root or publisher stores.
+The optional virtual display driver is installed system-wide and is not removed by deleting this app. Remove it with Device Manager.
 
 ## Third-party components
 
