@@ -447,6 +447,10 @@ internal sealed class MainForm : Form
         StyleReturnButton();
 
         _preview.BackColor = Color.FromArgb(18, 20, 25);
+        _latestVersionLink.LinkColor = darkMode ? Color.FromArgb(138, 180, 248) : SystemColors.HotTrack;
+        _latestVersionLink.ActiveLinkColor = darkMode ? Color.FromArgb(190, 215, 255) : Color.Red;
+        _latestVersionLink.VisitedLinkColor = _latestVersionLink.LinkColor;
+        _latestVersionLink.DisabledLinkColor = darkMode ? Color.FromArgb(170, 176, 184) : Color.FromArgb(133, 133, 133);
         _previewHint.ForeColor = darkMode
             ? Color.FromArgb(170, 176, 184)
             : Color.DimGray;
