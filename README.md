@@ -3,7 +3,7 @@
 Virtual Monitor Window is a portable Windows app for viewing a display in a
 resizable window.
 
-![Virtual Monitor Window 1.0.6 screenshot](./docs/images/virtual-monitor-window-v1.0.6.png)
+![Virtual Monitor Window 1.0.7 screenshot](./docs/images/virtual-monitor-window-v1.0.7.png)
 
 ## Why this exists
 
@@ -15,7 +15,7 @@ little duplicate monitor.
 
 ## Features
 
-- Live preview of detected Windows displays, with the visible cursor.
+- Virtual Monitor view of detected Windows displays, with the visible cursor.
 - Optional mouse and keyboard control for VDD virtual displays.
 - Create and manage up to 16 VDD virtual displays.
 - Light and dark themes.
@@ -25,7 +25,7 @@ little duplicate monitor.
 ## Run
 
 1. Open the [latest release](https://github.com/Full-Quantum/Virtual-Monitor-Window/releases/latest).
-2. Download `VirtualMonitorWindow-1.0.6.exe` and the two `Assets` ZIP files
+2. Download `VirtualMonitorWindow-1.0.7.exe` and the two `Assets` ZIP files
    (or the release archive, if provided), keeping the `Assets` folder next to
    the exe.
 3. Run the exe. No installer or separate .NET installation is needed, and the
@@ -34,8 +34,8 @@ little duplicate monitor.
 The footer checks GitHub for the latest release on launch; click the version
 indicator to open that release, or retry the check if it is unavailable.
 
-Click **Preview only** to hide every control except the live preview and a
-small **Exit preview only** button in its top-right corner. The preview then
+Click **Virtual Monitor Only Mode** to hide every control except the Virtual Monitor and a
+**Return to Main View** button in its top-right corner. The Virtual Monitor then
 fills the window edge to edge with no padding.
 
 The bundled display driver is **not installed automatically**. To use virtual
@@ -43,11 +43,11 @@ displays, select **Install virtual display driver...** and approve the Windows
 administrator prompt. Then choose a monitor count and apply it. The displays
 picker lists detected VDD displays first.
 
-The preview is view-only by default. Select a VDD display and enable **Control
+The Virtual Monitor is view-only by default. Select a VDD display and enable **Control
 the virtual display with mouse and keyboard** to forward input. Keyboard input
-is sent to the virtual display after clicking the preview. Press Escape to
+is sent to the virtual display after clicking the Virtual Monitor. Press Escape to
 turn control off. The install, monitor-count, and input-control options are
-under **Show virtual display settings**. Input outside the preview remains
+under **Show virtual display settings**. Input outside the Virtual Monitor remains
 local to Windows.
 
 To build it yourself instead, see [Build](#build).
@@ -66,7 +66,7 @@ dotnet publish .\VirtualMonitorWindow.csproj -c Release -r win-x64 --self-contai
 ```
 
 The executable is written to
-`bin\Release\net8.0-windows\win-x64\publish\VirtualMonitorWindow-1.0.6.exe`.
+`bin\Release\net8.0-windows\win-x64\publish\VirtualMonitorWindow-1.0.7.exe`.
 The two ZIP packages in `Assets` are copied alongside it and are required for
 the driver's installation workflow.
 
@@ -75,7 +75,7 @@ the driver's installation workflow.
 Run the published app with `--self-test`:
 
 ```powershell
-.\bin\Release\net8.0-windows\win-x64\publish\VirtualMonitorWindow-1.0.6.exe --self-test
+.\bin\Release\net8.0-windows\win-x64\publish\VirtualMonitorWindow-1.0.7.exe --self-test
 ```
 
 The self-test verifies the bundled package hashes, enumerates displays,

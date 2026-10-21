@@ -16,7 +16,7 @@ internal sealed class MainForm : Form
     private readonly Button _previewOnlyToggle = new()
     {
         AutoSize = true,
-        Text = "Preview only"
+        Text = "Virtual Monitor Only Mode"
     };
     private TableLayoutPanel _layout = null!;
     private bool _previewOnly;
@@ -128,7 +128,7 @@ internal sealed class MainForm : Form
 
     public MainForm()
     {
-        Text = "Virtual Monitor Window 1.0.6";
+        Text = "Virtual Monitor Window 1.0.7";
         MinimumSize = new Size(640, 480);
         Size = new Size(1000, 680);
         StartPosition = FormStartPosition.CenterScreen;
@@ -176,7 +176,7 @@ internal sealed class MainForm : Form
         {
             AutoSize = true,
             Font = new Font(Font.FontFamily, 15, FontStyle.Bold),
-            Text = "Virtual Monitor Window 1.0.6",
+            Text = "Virtual Monitor Window 1.0.7",
             Padding = new Padding(0, 0, 0, 8)
         };
         layout.Controls.Add(heading, 0, 0);
@@ -212,7 +212,7 @@ internal sealed class MainForm : Form
         {
             AutoSize = true,
             Font = new Font(Font.FontFamily, 10, FontStyle.Bold),
-            Text = "Live preview",
+            Text = "Virtual Monitor",
             Padding = new Padding(0, 0, 0, 4)
         }, 0, 3);
         var displayRow = new TableLayoutPanel
@@ -270,7 +270,7 @@ internal sealed class MainForm : Form
         footer.Controls.Add(new Label
         {
             AutoSize = true,
-            Text = "by Full_Quantum | v1.0.6",
+            Text = "by Full_Quantum | v1.0.7",
             TextAlign = ContentAlignment.MiddleRight,
             Padding = new Padding(0, 0, 2, 0)
         });
@@ -395,7 +395,7 @@ internal sealed class MainForm : Form
         _preview.BorderStyle = enabled ? BorderStyle.None : BorderStyle.FixedSingle;
         if (enabled)
         {
-            _previewOnlyToggle.Text = "Exit preview only";
+            _previewOnlyToggle.Text = "Return to Main View";
             _previewOnlyToggle.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             _preview.Controls.Add(_previewOnlyToggle);
             _previewOnlyToggle.Location = new Point(_preview.ClientSize.Width - _previewOnlyToggle.Width, 0);
@@ -405,13 +405,25 @@ internal sealed class MainForm : Form
         {
             _preview.Controls.Remove(_previewOnlyToggle);
             _previewOnlyToggle.Anchor = AnchorStyles.Top | AnchorStyles.Left;
-            _previewOnlyToggle.Text = "Preview only";
+            _previewOnlyToggle.Text = "Virtual Monitor Only Mode";
             var toolbar = (FlowLayoutPanel)_layout.GetControlFromPosition(0, 1)!;
             toolbar.Controls.Add(_previewOnlyToggle);
         }
 
         _layout.ResumeLayout(true);
         ResumeLayout(true);
+        ApplyTheme(_darkMode.Checked);
+    }
+
+    private void StyleReturnButton()
+    {
+        if (!_previewOnly)
+            return;
+        _previewOnlyToggle.FlatStyle = FlatStyle.Flat;
+        _previewOnlyToggle.UseVisualStyleBackColor = false;
+        _previewOnlyToggle.BackColor = Color.FromArgb(0, 95, 184);
+        _previewOnlyToggle.ForeColor = Color.White;
+        _previewOnlyToggle.FlatAppearance.BorderColor = Color.White;
     }
 
     private void ApplyTheme(bool darkMode)
@@ -432,6 +444,7 @@ internal sealed class MainForm : Form
         BackColor = background;
         ForeColor = foreground;
         ApplyThemeToChildren(this, darkMode, surface, raisedSurface, foreground);
+        StyleReturnButton();
 
         _preview.BackColor = Color.FromArgb(18, 20, 25);
         _previewHint.ForeColor = darkMode
@@ -670,7 +683,7 @@ internal sealed class MainForm : Form
             try
             {
                 InstallInputHooks();
-                _status.Text = "Control is enabled only while the pointer is over the preview. Press Escape to stop.";
+                _status.Text = "Control is enabled only while the pointer is over the Virtual Monitor. Press Escape to stop.";
             }
             catch (Win32Exception error)
             {
@@ -684,7 +697,7 @@ internal sealed class MainForm : Form
             RemoveInputHooks();
             _keyboardInputActive = false;
             _mouseButtonHeld = false;
-            _status.Text = "Control is off. The preview is view-only.";
+            _status.Text = "Control is off. The Virtual Monitor is view-only.";
         }
         UpdatePreviewHint();
     }
@@ -705,7 +718,7 @@ internal sealed class MainForm : Form
         }
         else
         {
-            _previewHint.Text = "Virtual display preview is view-only. Enable control above when you want to interact.";
+            _previewHint.Text = "Virtual Monitor is view-only. Enable control above when you want to interact.";
         }
     }
 
@@ -725,7 +738,7 @@ internal sealed class MainForm : Form
             if (_lastCaptureError.Length > 0)
             {
                 _lastCaptureError = "";
-                _status.Text = $"Previewing {_selectedDisplay.DeviceName}.";
+                _status.Text = $"Showing {_selectedDisplay.DeviceName}.";
             }
         }
         catch (Exception error) when (error is Win32Exception or ArgumentException or ExternalException)

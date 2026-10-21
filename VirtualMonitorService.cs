@@ -21,7 +21,37 @@ internal sealed record DisplayTarget(
     {
         var kind = IsVirtual ? "VIRTUAL" : "DISPLAY";
         var primary = IsPrimary ? " · Primary" : "";
-        return $"{kind}  {Bounds.Width} × {Bounds.Height}{primary}  —  {DeviceName}";
+        return $"{kind}  {Bounds.Width} × {Bounds.Height} ({AspectRatio}){primary}  —  {DeviceName}";
+    }
+
+    public string AspectRatio
+    {
+        get
+        {
+            var w = Bounds.Width;
+            var h = Bounds.Height;
+            if (w <= 0 || h <= 0)
+                return "?";
+            var gcd = Gcd(w, h);
+            var (rw, rh) = (w / gcd, h / gcd);
+            if (rw <= 32 && rh <= 32)
+                return $"{rw}:{rh}";
+            var value = (double)w / h;
+            foreach (var (cw, ch) in new[] { (16, 9), (16, 10), (4, 3), (21, 9), (32, 9), (5, 4), (3, 2) })
+            {
+                if (Math.Abs(value - (double)cw / ch) < 0.02)
+                    return $"{cw}:{ch}";
+            }
+
+            return $"{value:0.##}:1";
+        }
+    }
+
+    private static int Gcd(int a, int b)
+    {
+        while (b != 0)
+            (a, b) = (b, a % b);
+        return a;
     }
 }
 
@@ -232,7 +262,7 @@ internal static class VirtualMonitorService
             Console.WriteLine($"Windows displays found: {displays.Count}");
             foreach (var display in displays)
                 Console.WriteLine(
-                    $"{(display.IsVirtual ? "VIRTUAL" : "DISPLAY")} {display.Bounds.Width}x{display.Bounds.Height} {display.DeviceName}");
+                    $"{(display.IsVirtual ? "VIRTUAL" : "DISPLAY")} {display.Bounds.Width}x{display.Bounds.Height} ({display.AspectRatio}) {display.DeviceName}");
 
             if (displays.Count > 0)
             {
